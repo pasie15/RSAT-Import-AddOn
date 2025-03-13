@@ -19,7 +19,7 @@ This add-on provides functionality to import test cases and test steps from RSAT
 
 1. Clone or download the repository.
 2. Open the solution in Visual Studio.
-3. Ensure the project targets the .NET Framework 4.8).
+3. Ensure the project targets the .NET Framework 4.8.
 4. Add reference to Microsoft Excel Interop (`Microsoft Excel XX.X Object Library`) via COM references in your project.
 5. Build the solution to generate the DLL.
 6. Place the generated DLL into the Tosca Add-ons directory.
