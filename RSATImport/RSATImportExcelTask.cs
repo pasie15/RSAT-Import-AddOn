@@ -43,7 +43,7 @@ namespace RSATImportAddon.Tasks
                 string rsatTestCaseDescription = generalSheet.Cells[3, 2].Value?.ToString();
 
                 // Create test case in Tosca
-                TestCase toscaTestCase = destFolder.CreateManualTestCase(destFolder);
+                TestCase toscaTestCase = destFolder.CreateTestCase();
                 toscaTestCase.Name = rsatTestCaseName;
                 toscaTestCase.Description = rsatTestCaseDescription;
 
@@ -59,12 +59,12 @@ namespace RSATImportAddon.Tasks
 
                     if (!string.IsNullOrWhiteSpace(rsatStepAction))
                     {
-                        var toscaTestStep = toscaTestCase.CreateManualXTestStep();
-                        toscaTestStep.Name = rsatStepAction;
+                        var toscaTestStepFolder = toscaTestCase.CreateFolder();
+                        toscaTestStepFolder.Name = rsatStepAction;
 
-                        var toscaStepValue = toscaTestStep.CreateManualXTestStepValue();
-                        toscaStepValue.Value = rsatStepValue;
-                        toscaStepValue.ActionMode = XTestStepActionMode.Verify;
+                        //var toscaStepValue = toscaTestStep.CreateManualXTestStepValue();
+                        //toscaStepValue.Value = rsatStepValue;
+                        //toscaStepValue.ActionMode = XTestStepActionMode.Verify;
                     }
                 }
 
@@ -74,13 +74,10 @@ namespace RSATImportAddon.Tasks
                 Marshal.ReleaseComObject(workbook);
 
                 taskContext.ShowMessageBox("Success", "RSAT test case and steps imported successfully.");
-
-                return null;
             }
             catch (Exception ex)
             {
                 taskContext.ShowErrorMessage("Import Error", ex.Message);
-                return null;
             }
             finally
             {
@@ -88,6 +85,7 @@ namespace RSATImportAddon.Tasks
                 Marshal.ReleaseComObject(excelApp);
             }
 
+            return objectToExecuteOn;
         }
     }
 }
