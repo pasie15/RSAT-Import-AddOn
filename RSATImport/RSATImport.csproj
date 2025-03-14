@@ -76,7 +76,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HelloWorldTask.cs" />
     <Compile Include="RSATImportExcelTask.cs" />
     <Compile Include="RSATImportTCAddon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

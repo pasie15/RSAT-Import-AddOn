@@ -9,7 +9,7 @@ namespace RSATImportAddon.Tasks
 {
     public class RSATImportExcelTask : TCAddOnTask
     {
-        public override string Name => "Import RSAT Excel";
+        public override string Name => "Import RSAT Excel File";
 
         public override Type ApplicableType => typeof(TCFolder);
 
@@ -32,41 +32,67 @@ namespace RSATImportAddon.Tasks
             try
             {
                 var destFolder = objectToExecuteOn as TCFolder;
-                string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\RSAT_Sample_Test.xlsx";
+                // Allow user to select Excel file
+                string[] selectedFiles = taskContext.GetFilePaths("Select RSAT Excel File", false, "xlsx");
+                if (selectedFiles == null || selectedFiles.Length == 0)
+                {
+                    taskContext.ShowErrorMessage("File Selection Error", "No file selected.");
+                    return null;
+                }
+
+                string filePath = selectedFiles[0];
 
                 Workbook workbook = excelApp.Workbooks.Open(filePath);
                 Worksheet generalSheet = workbook.Worksheets["General"];
                 Worksheet stepsSheet = workbook.Worksheets["TestCaseSteps"];
 
                 // Read general test case details
-                string rsatTestCaseName = generalSheet.Cells[2, 2].Value?.ToString();
-                string rsatTestCaseDescription = generalSheet.Cells[3, 2].Value?.ToString();
+                string rsatTestCaseName = generalSheet.Cells[4, 2].Value?.ToString();
 
                 // Create test case in Tosca
                 TestCase toscaTestCase = destFolder.CreateTestCase();
                 toscaTestCase.Name = rsatTestCaseName;
-                toscaTestCase.Description = rsatTestCaseDescription;
+
+                // Create Precondition Folder Structure
+                var preconditionFolder = toscaTestCase.CreateFolder();
+                preconditionFolder.Name = "Precondition";
+
+                var loginFolder = preconditionFolder.CreateFolder();
+                loginFolder.Name = "Log into Dynamics 365 FinOps Environment";
+
+                // Create Process Folder
+                var processFolder = toscaTestCase.CreateFolder();
+                processFolder.Name = "Process";
 
                 // Read test steps from "TestCaseSteps" sheet
                 Range stepsRange = stepsSheet.UsedRange;
                 object[,] stepsData = (object[,])stepsRange.Value2;
                 int stepRows = stepsData.GetLength(0);
 
-                for (int row = 2; row <= stepRows; row++)
+                for (int row = 3; row <= stepRows; row++)
                 {
                     string rsatStepAction = stepsData[row, 2]?.ToString();
+                    string rsatStepField = stepsData[row, 3]?.ToString();
                     string rsatStepValue = stepsData[row, 4]?.ToString();
 
                     if (!string.IsNullOrWhiteSpace(rsatStepAction))
                     {
-                        var toscaTestStepFolder = toscaTestCase.CreateFolder();
-                        toscaTestStepFolder.Name = rsatStepAction;
+                        string folderName = rsatStepAction;
 
-                        //var toscaStepValue = toscaTestStep.CreateManualXTestStepValue();
-                        //toscaStepValue.Value = rsatStepValue;
-                        //toscaStepValue.ActionMode = XTestStepActionMode.Verify;
+                        if (!string.IsNullOrWhiteSpace(rsatStepField))
+                            folderName += " | " + rsatStepField;
+
+                        if (!string.IsNullOrWhiteSpace(rsatStepValue))
+                            folderName += ": " + rsatStepValue;
+
+                        var toscaTestStepFolder = processFolder.CreateFolder();
+                        toscaTestStepFolder.Name = folderName;
                     }
                 }
+
+                // Create Postcondition Folder
+                var postconditionFolder = toscaTestCase.CreateFolder();
+                postconditionFolder.Name = "Postcondition";
 
                 workbook.Close(false);
                 Marshal.ReleaseComObject(generalSheet);
@@ -74,18 +100,18 @@ namespace RSATImportAddon.Tasks
                 Marshal.ReleaseComObject(workbook);
 
                 taskContext.ShowMessageBox("Success", "RSAT test case and steps imported successfully.");
+                return toscaTestCase;
             }
             catch (Exception ex)
             {
                 taskContext.ShowErrorMessage("Import Error", ex.Message);
+                return null;
             }
             finally
             {
                 excelApp.Quit();
                 Marshal.ReleaseComObject(excelApp);
             }
-
-            return objectToExecuteOn;
         }
     }
 }
