@@ -61,4 +61,4 @@ https://documentation.tricentis.com/devcorner/930/tcaddon/
 
 ## Author
 **David Taylor**  
-[GitHub](https://github.com/dtaylorttc) | [LinkedIn](https://www.linkedin.com/in/david-taylor-96791196/)
+[GitHub](https://github.com/pasie15) | [LinkedIn](https://www.linkedin.com/in/david-taylor-96791196/)
