@@ -15,14 +15,18 @@ This add-on provides functionality to import test cases and test steps from RSAT
 - Microsoft Excel installed on the machine (Excel Interop is used).
 - Microsoft Excel Interop COM reference added to the project.
 
-## Installation
+## Bulding the DLL File
 
 1. Clone or download the repository.
 2. Open the solution in Visual Studio.
 3. Ensure the project targets the .NET Framework 4.8.
 4. Add a reference to Microsoft Excel Interop (`Microsoft Excel XX.X Object Library`) via COM references in your project.
 5. Build the solution to generate the RSATImport DLL file.
-6. Place the generated DLL (RSATImport.dll) into the C:\Program Files (x86)\TRICENTIS\Tosca Testsuite\ToscaCommander directory.
+
+## Installation
+
+1. Place the RSATImport.dll from the zip file into the C:\Program Files (x86)\TRICENTIS\Tosca Testsuite\ToscaCommander directory.
+2. Right-click on the RSATImport.dll file, go to "Properties", and in the "Attributes" section, tick the "Unblock" checkbox.
 
 ## Usage
 
