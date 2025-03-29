@@ -1,12 +1,12 @@
 # RSAT Excel Import Add-on for Tricentis Tosca
 
-This add-on provides functionality to import test cases and test steps from RSAT (Regression Suite Automation Tool) Excel sheets directly into Tricentis Tosca as manual test cases and test steps.
+This add-on provides functionality to import test cases and test steps from RSAT (Regression Suite Automation Tool) Excel sheets directly into Tricentis Tosca as a test case with folders representing each test step.
 
 ## Features
 
 - Imports test case details and descriptions from the "General" worksheet.
 - Imports test step details (actions and expected results) from the "TestCaseSteps" worksheet.
-- Automatically creates a manual test case with corresponding manual test steps.
+- Automatically creates a test case with corresponding manual test steps as folders with test case fields and values concatenated.
 - Easy integration and usage within Tosca Commander.
 
 ## Prerequisites
@@ -20,28 +20,28 @@ This add-on provides functionality to import test cases and test steps from RSAT
 1. Clone or download the repository.
 2. Open the solution in Visual Studio.
 3. Ensure the project targets the .NET Framework 4.8.
-4. Add reference to Microsoft Excel Interop (`Microsoft Excel XX.X Object Library`) via COM references in your project.
-5. Build the solution to generate the DLL.
-6. Place the generated DLL into the Tosca Add-ons directory.
+4. Add a reference to Microsoft Excel Interop (`Microsoft Excel XX.X Object Library`) via COM references in your project.
+5. Build the solution to generate the RSATImport DLL file.
+6. Place the generated DLL (RSATImport.dll) into the C:\Program Files (x86)\TRICENTIS\Tosca Testsuite\ToscaCommander directory.
 
 ## Usage
 
 1. Launch Tosca Commander.
 2. Right-click a folder where you want to import the test case.
-3. Select "Import RSAT Excel" from the context menu.
-4. Ensure your RSAT Excel file (`RSAT_Sample_Test.xlsx`) is placed within the "My Documents" folder.
+3. Select "RSAT Import AddOn" > "Import RSAT Excel File" from the context menu.
+4. Select the RSAT Excel test case file from the File Select Pop-Up Window.
 
 ## Excel Structure
 
 Your RSAT Excel file must include:
 
 - **General Worksheet**: 
-  - Cell `B2`: Test Case Name
-  - Cell `B3`: Test Case Description
+  - Cell `B4`: Recording Name (Test Case Name)
 
 - **TestCaseSteps Worksheet**:
   - Column `B`: Step Action
-  - Column `D`: Step Expected Result
+  - Column `C`: Field
+  - Column `D`: Value
 
 ## Error Handling
 
@@ -49,12 +49,16 @@ The add-on includes basic error handling with clear messaging for the following 
 
 - Excel fails to start.
 - Errors encountered during Excel operations.
-- Any exception during import operations will be displayed as an error message in Tosca.
+- Any exception during import or file selection operations will be displayed as an error message in Tosca.
 
-## Support
+## Reference
 
-For any issues or support, please open an issue in this repository.
+Information on how to Create and Install a Tosca AddOn can be found here:
+https://documentation.tricentis.com/devcorner/2023.2/tcaddon/topic2.html
 
-## License
+Information on classes and properties of Tosca AddOn Objects can be found here:
+https://documentation.tricentis.com/devcorner/930/tcaddon/
 
-This project is provided "as-is" without warranty of any kind.
+## Author
+**David Taylor**  
+[GitHub](https://github.com/dtaylorttc) | [LinkedIn](https://www.linkedin.com/in/david-taylor-96791196/)
